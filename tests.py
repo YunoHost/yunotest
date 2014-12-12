@@ -7,3 +7,8 @@ def test1():
 def test2():
   print 'inside test2'
   assert( 1 == 2 )
+
+def test3():
+  print 'inside test3'
+  assert( 1 == 3 )
+
