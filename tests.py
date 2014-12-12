@@ -17,7 +17,7 @@ class TestYunoapps:
 
   def test_1(self):
     print 'inside test1'
-    self.attach_file('LICENSE')
+    self.attach_file('LICENSE.txt')
     assert( 1 == 1 )
 
   def test_2(self):
