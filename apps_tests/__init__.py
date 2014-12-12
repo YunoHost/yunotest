@@ -11,7 +11,7 @@ def _make_AppTest(appid):
           cas...
       """
       def attach_file(self, relative_path):
-        output_path = os.path.join(os.path.dirname(__file__), "%s.%s" % (__name__,self.__class__.__name__))
+        output_path = os.path.join(os.path.dirname(__file__), "..", "%s.%s" % (__name__,self.__class__.__name__))
         try:
           os.makedirs( output_path )
         except os.error:
