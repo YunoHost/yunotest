@@ -1,4 +1,5 @@
 {
+  "id" : "roundcube",
   "git" : "https://github.com/Kloadut/roundcube_ynh",
   "install" : {
     "domain" : "${MAIN_DOMAIN}",
