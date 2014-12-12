@@ -5,7 +5,7 @@ import os
 class TestYunoapps:
   def attach_file(self, relative_path):
     #output_path = os.path.join(os.path.dirname(__file__), self.__class__.__name__)
-    output_path = os.path.join(os.path.dirname(__file__), "tests")
+    output_path = os.path.join(os.path.dirname(__file__), "tests.TestYunoapps")
     try:
       os.makedirs( output_path )
     except os.error:
