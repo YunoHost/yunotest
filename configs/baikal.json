@@ -1,0 +1,9 @@
+{
+  "id" : "baikal",
+  "git" : "https://github.com/julienmalik/baikal_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/phpmyadmin",
+    "password" : "${RANDOM_PASSWORD}"
+  }
+}

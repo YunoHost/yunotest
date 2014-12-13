@@ -12,6 +12,10 @@ import time
 import pexpect
 from contextlib import contextmanager
 
+def get_random_password(length=32):
+  choices = string.ascii_uppercase + string.ascii_lowercase + string.digits
+  return ''.join(random.choice(choices) for _ in range(length))
+
 class DigitalOceanServer():
   def __init__(self, domain, ssh_key, doyunohost_path, admin_password):
     self.domain = domain
@@ -81,7 +85,10 @@ class DigitalOceanServer():
   def install_app(self, test_prop):
     test_prop_resolved = {}
     for key, value in test_prop['install'].items():
-      test_prop_resolved[key] = value.replace('${MAIN_DOMAIN}', self.domain)
+      test_prop_resolved[key] = value \
+         .replace('${MAIN_DOMAIN}', self.domain) \
+         .replace('${USER}', theodocle) \
+         .replace('${RANDOM_PASSWORD}', get_random_password())
     install_args = urllib.urlencode(test_prop_resolved)
     install_command = "yunohost app install '%s' -a '%s'" % (test_prop['git'], install_args)
     self.run_remote_cmd(install_command)

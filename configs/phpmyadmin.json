@@ -1,0 +1,9 @@
+{
+  "id" : "phpmyadmin",
+  "git" : "https://github.com/julienmalik/phpmyadmin_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/phpmyadmin",
+    "admin" : "${USER}"
+  }
+}
