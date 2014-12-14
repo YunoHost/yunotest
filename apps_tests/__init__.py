@@ -84,20 +84,24 @@ def _make_AppTest(config):
         os.system( command )
         
       def attach_data(self, data, filename):
-        output_path = os.path.join(os.path.dirname(__file__), "..", "%s.%s" % (__name__,self.__class__.__name__), filename)
-        with open(output_path, "w") as f:
+        output_path = os.path.join(os.path.dirname(__file__), "..", "%s.%s" % (__name__,self.__class__.__name__))
+        try:
+          os.makedirs( output_path )
+        except os.error:
+          pass
+        with open(os.path.join(output_path, filename), "w") as f:
           f.write(data)
 
       def test_install(self):
         global context
         (command_output, exitstatus) = context.server.install_app(config)
-        self.attach_data(command_output, "install")
+        self.attach_data(command_output, "install.txt")
         assert exitstatus == 0
 
       def test_remove(self):
         global context
         (command_output, exitstatus) = context.server.remove_app(config)
-        self.attach_data(command_output, "remove")
+        self.attach_data(command_output, "remove.txt")
         assert exitstatus == 0
 
       def test_manifest(self):
