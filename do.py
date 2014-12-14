@@ -52,7 +52,7 @@ class DigitalOceanServer:
       if not line:
         break
       print line
-    exit_code = p.returncode
+    exit_code = process.returncode
     print('< exit code : %s' % (exit_code))
 
   def run_remote_cmd(self, command, user='root'):
