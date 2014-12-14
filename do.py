@@ -89,7 +89,7 @@ class DigitalOceanServer:
     for key, value in test_prop['install'].items():
       test_prop_resolved[key] = value \
          .replace('${MAIN_DOMAIN}', self.domain) \
-         .replace('${USER}', theodocle) \
+         .replace('${USER}', 'theodocle') \
          .replace('${RANDOM_PASSWORD}', make_random_password())
     install_args = urllib.urlencode(test_prop_resolved)
     install_command = "yunohost app install '%s' -a '%s'" % (test_prop['git'], install_args)
