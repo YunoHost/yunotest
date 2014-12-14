@@ -41,7 +41,7 @@ if __name__ == '__main__':
   test_prop = load_test_prop( test_file )
   domain = make_test_domain()
 
-  with do.deploy( do.DigitalOceanServer(domain, doyunohost_path, 'yomec') ) as test_server:
+  with do.deploy( do.DigitalOceanServer(domain, 'yomec', doyunohost_path) ) as test_server:
     test_server.setup()
     test_server.install_app(test_prop)
 

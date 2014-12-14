@@ -10,17 +10,25 @@ import urllib
 import copy
 import time
 import pexpect
+import string
+
 from contextlib import contextmanager
 
-def get_random_password(length=32):
+def make_test_domain():
+  prefix = 'yunotest-'
+  suffix = '.nohost.me'
+  id = random.randint(1, 100000)
+  return '%s%06d%s' % (prefix, id, suffix)
+
+def make_random_password(length=32):
   choices = string.ascii_uppercase + string.ascii_lowercase + string.digits
   return ''.join(random.choice(choices) for _ in range(length))
 
-class DigitalOceanServer():
-  def __init__(self, domain, doyunohost_path, admin_password):
+class DigitalOceanServer:
+  def __init__(self, domain, admin_password, doyunohost_path):
     self.domain = domain
-    self.doyunohost_path = doyunohost_path
     self.admin_password = admin_password
+    self.doyunohost_path = doyunohost_path
 
   def deploy(self):
     print('Starting to deploy DigitalOcean server %s' % (self.domain))
@@ -39,14 +47,9 @@ class DigitalOceanServer():
     print('Running command : %s' % (command))
     ssh_wrapper = 'ssh -t -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "root@%s" "export TERM=linux; %s"' \
       % (self.ip, command)
-    (command_output, exitstatus) = pexpect.run(ssh_wrapper, withexitstatus=True, \
+    return pexpect.run(ssh_wrapper, withexitstatus=True, \
       events={'Administration password:':'%s\n' % (self.admin_password)})
-    print command_output
-    if not exitstatus:
-      print('Command [%s] OK' % (command))
-    else:
-      print('Command [%s] NOT OK. Returned : %s' % (command, exitstatus))
-    
+
   def setup(self):
     self.retrieve_ip()
     self.run_remote_cmd("yunohost user create -f Theodocle -l Chancremou -p grumpf -m 'theodocle.chancremou@%s' theodocle" \
@@ -87,10 +90,14 @@ class DigitalOceanServer():
       test_prop_resolved[key] = value \
          .replace('${MAIN_DOMAIN}', self.domain) \
          .replace('${USER}', theodocle) \
-         .replace('${RANDOM_PASSWORD}', get_random_password())
+         .replace('${RANDOM_PASSWORD}', make_random_password())
     install_args = urllib.urlencode(test_prop_resolved)
     install_command = "yunohost app install '%s' -a '%s'" % (test_prop['git'], install_args)
-    self.run_remote_cmd(install_command)
+    return self.run_remote_cmd(install_command)
+    
+  def remove_app(self, test_prop):
+    remove_command = "yunohost app remove %s" % (test_prop['id'])
+    return self.run_remote_cmd(remove_command)
 
 # http://preshing.com/20110920/the-python-with-statement-by-example/
 @contextmanager

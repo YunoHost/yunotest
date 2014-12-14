@@ -7,14 +7,45 @@ import os
 import do
 import configs
 
-doyunohost = ''
+class PackageContext:
+  def __init__(self):
+    self.doyunohost = self.get_doyunohost()
+    self.domain = do.make_test_domain()
+    self.admin_password = do.make_random_password()
+    self.server = None
+
+  def get_doyunohost(self):
+      doyunohost = os.getenv('DOYUNOHOST')
+      if not doyunohost:
+        raise RuntimeError('You need to set DOYUNOHOST env. var')
+        
+      if not os.path.exists( os.path.join(doyunohost, 'deploy.py') ) \
+         or not os.path.exists( os.path.join(doyunohost, 'remove.py') ):
+           raise ValueError('You need to set DOYUNOHOST env. var to a clone of https://github.com/YunoHost/doyunohost')
+           
+      if not os.path.exists( os.path.join(doyunohost, 'config.local') ):
+        raise RuntimeError('$DOYUNOHOST/config.local is not set up')
+      
+      return doyunohost
+  
+  def setup_server(self):
+    self.server = do.DigitalOceanServer(self.domain, self.admin_password, self.doyunohost)
+    self.server.deploy()
+    self.server.setup()
+    
+  def teardown_server(self):
+    self.server.remove()
+
+context = PackageContext()
 
 # http://nose.readthedocs.org/en/latest/writing_tests.html#test-packages
 def setup_package():
-  pass
+  global context
+  context.setup_server()
 
 def teardown_package():
-  pass
+  global context
+  context.teardown_server()
 
 def _make_AppTest(config):
   class AppTest(unittest.TestCase):
@@ -51,14 +82,23 @@ def _make_AppTest(config):
           pass
         command = 'cp %s %s' % ( os.path.join(os.getcwd(), relative_path), output_path)
         os.system( command )
+        
+      def attach_data(self, data, filename):
+        output_path = os.path.join(os.path.dirname(__file__), "..", "%s.%s" % (__name__,self.__class__.__name__), filename)
+        with open(output_path, "w") as f:
+          f.write(data)
 
       def test_install(self):
-        self.attach_file('LICENSE.txt')
-        print('Testing %s' % (config["id"]))
-        assert(False)
+        global context
+        (command_output, exitstatus) = context.server.install_app(config)
+        self.attach_data(command_output, "install")
+        assert exitstatus == 0
 
       def test_remove(self):
-        pass
+        global context
+        (command_output, exitstatus) = context.server.remove_app(config)
+        self.attach_data(command_output, "remove")
+        assert exitstatus == 0
 
       def test_manifest(self):
         pass
@@ -66,22 +106,7 @@ def _make_AppTest(config):
   cl = type("%s" % str(config["id"]), (AppTest,), {})
   return cl
 
-def load_doyunohost():
-    global doyunohost
-    doyunohost = os.getenv('DOYUNOHOST')
-    if not doyunohost:
-      raise RuntimeError('You need to set DOYUNOHOST env. var')
-      
-    if not os.path.exists( os.path.join(doyunohost, 'deploy.py') ) \
-       or not os.path.exists( os.path.join(doyunohost, 'remove.py') ):
-         raise ValueError('You need to set DOYUNOHOST env. var to a clone of https://github.com/YunoHost/doyunohost')
-         
-    if not os.path.exists( os.path.join(doyunohost, 'config.local') ):
-      raise RuntimeError('$DOYUNOHOST/config.local is not set up')
-
 def init():
-    load_doyunohost()
-    
     for key, config in configs.configlist.items():
       cl = _make_AppTest( config )
       setattr(sys.modules[__name__], cl.__name__, cl)
