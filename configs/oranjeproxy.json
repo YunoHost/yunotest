@@ -1,5 +1,5 @@
 {
-  "id" : "openvpn",
+  "id" : "oranjeproxy",
   "git" : "https://github.com/Kloadut/oranjeproxy_ynh",
   "install" : {
     "domain" : "${MAIN_DOMAIN}",
