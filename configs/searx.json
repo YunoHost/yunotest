@@ -1,0 +1,9 @@
+{
+  "id" : "searx",
+  "git" : "https://github.com/abeudin/searx_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/searx",
+    "public_site" : "Yes"
+  }
+}

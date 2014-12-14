@@ -1,0 +1,10 @@
+{
+  "id" : "jappix",
+  "git" : "https://github.com/titoko/jappix_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/jappix",
+    "name" : "YunoJappix",
+    "language" : "en"
+  }
+}

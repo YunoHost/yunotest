@@ -1,0 +1,12 @@
+{
+  "id" : "opensondage",
+  "git" : "https://github.com/zamentur/opensondage_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/opensondage",
+    "admin" : "${USER}",
+    "legal" : "no",
+    "language" : "fr_FR",
+    "public_site" : "Yes"
+  }
+}

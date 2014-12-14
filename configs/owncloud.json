@@ -1,0 +1,9 @@
+{
+  "id" : "owncloud",
+  "git" : "https://github.com/Kloadut/owncloud_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/owncloud",
+    "admin" : "${USER}"
+  }
+}

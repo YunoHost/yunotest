@@ -1,0 +1,10 @@
+{
+  "id" : "my_webapp",
+  "git" : "https://github.com/Kloadut/my_webapp_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/mywebapp",
+    "admin" : "${USER}",
+    "is_public" : "Yes"
+  }
+}

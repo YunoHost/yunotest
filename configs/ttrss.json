@@ -1,0 +1,8 @@
+{
+  "id" : "ttrss",
+  "git" : "https://github.com/titoko/ttrss_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/ttrss"
+  }
+}

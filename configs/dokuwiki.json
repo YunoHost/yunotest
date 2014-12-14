@@ -1,0 +1,10 @@
+{
+  "id" : "dokuwiki",
+  "git" : "https://github.com/opi/dokuwiki_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/dokuwiki",
+    "admin" : "${USER}",
+    "is_public" : "Yes"
+  }
+}

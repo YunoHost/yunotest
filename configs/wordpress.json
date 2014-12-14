@@ -1,0 +1,11 @@
+{
+  "id" : "wordpress",
+  "git" : "https://github.com/abeudin/wordpress_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/wordpress",
+    "admin" : "${USER}",
+    "langage" : "en_EN",
+    "public_site" : "Yes"
+  }
+}

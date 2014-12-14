@@ -1,0 +1,8 @@
+{
+  "id" : "transmission",
+  "git" : "https://github.com/Kloadut/transmission_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/torrent"
+  }
+}

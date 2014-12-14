@@ -1,0 +1,8 @@
+{
+  "id" : "gateone",
+  "git" : "https://github.com/Kloadut/gateone_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/gateone"
+  }
+}

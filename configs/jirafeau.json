@@ -1,0 +1,11 @@
+{
+  "id" : "jirafeau",
+  "git" : "https://github.com/julienmalik/jirafeau_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/jirafeau",
+    "admin_user" : "${USER}",
+    "upload_password" : "${RANDOM_PASSWORD}",
+    "is_public" : "Yes"
+  }
+}

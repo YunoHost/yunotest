@@ -1,0 +1,9 @@
+{
+  "id" : "zerobin",
+  "git" : "https://github.com/julienmalik/zerobin_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/zerobin",
+    "is_public" : "Yes"
+  }
+}

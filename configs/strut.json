@@ -1,0 +1,9 @@
+{
+  "id" : "strut",
+  "git" : "https://github.com/zamentur/strut_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/strut",
+    "public_site" : "Yes"
+  }
+}

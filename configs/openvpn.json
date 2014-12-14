@@ -1,0 +1,8 @@
+{
+  "id" : "openvpn",
+  "git" : "https://github.com/Kloadut/openvpn_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/openvpn"
+  }
+}

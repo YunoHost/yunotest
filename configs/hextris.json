@@ -1,0 +1,9 @@
+{
+  "id" : "hextris",
+  "git" : "https://github.com/opi/hextris_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/hextris",
+    "is_public" : "Yes"
+  }
+}
