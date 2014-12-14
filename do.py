@@ -17,15 +17,14 @@ def get_random_password(length=32):
   return ''.join(random.choice(choices) for _ in range(length))
 
 class DigitalOceanServer():
-  def __init__(self, domain, ssh_key, doyunohost_path, admin_password):
+  def __init__(self, domain, doyunohost_path, admin_password):
     self.domain = domain
-    self.ssh_key = ssh_key
     self.doyunohost_path = doyunohost_path
     self.admin_password = admin_password
 
   def deploy(self):
     print('Starting to deploy DigitalOcean server %s' % (self.domain))
-    command = "python %s/deploy.py --domain %s --ssh-key-name julaptop --password %s" \
+    command = "python %s/deploy.py --domain %s --password %s" \
        % (self.doyunohost_path, self.domain, self.admin_password)
     os.system(command)
     print('Successfully deployed DigitalOcean server %s' % (self.domain))

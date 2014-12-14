@@ -28,8 +28,7 @@ def usage():
 if __name__ == '__main__':
   
   if '--test-file' not in sys.argv \
-    or  '--doyunohost' not in sys.argv \
-    or  '--ssh-key' not in sys.argv:
+    or  '--doyunohost' not in sys.argv:
       usage()
       sys.exit(1)
 
@@ -38,13 +37,11 @@ if __name__ == '__main__':
       test_file = sys.argv[key+1]
     if arg == '--doyunohost':
       doyunohost_path = sys.argv[key+1]
-    if arg == '--ssh-key':
-      ssh_key = sys.argv[key+1]
 
   test_prop = load_test_prop( test_file )
   domain = make_test_domain()
 
-  with do.deploy( do.DigitalOceanServer(domain, ssh_key, doyunohost_path, 'yomec') ) as test_server:
+  with do.deploy( do.DigitalOceanServer(domain, doyunohost_path, 'yomec') ) as test_server:
     test_server.setup()
     test_server.install_app(test_prop)
 
