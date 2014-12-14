@@ -16,7 +16,7 @@ def setup_package():
 def teardown_package():
   pass
 
-def _make_AppTest(appid):
+def _make_AppTest(config):
   class AppTest(unittest.TestCase):
       """ Classe de base, elle peut faire un setUp, un tearDown
           et avoir des méthodes spécifique, comme "parse" dans notre
@@ -54,13 +54,16 @@ def _make_AppTest(appid):
 
       def test_install(self):
         self.attach_file('LICENSE.txt')
-        print('Testing %s' % (appid))
+        print('Testing %s' % (config["id"]))
         assert(False)
 
       def test_remove(self):
         pass
 
-  cl = type("%s" % appid, (AppTest,), {})
+      def test_manifest(self):
+        pass
+
+  cl = type("%s" % str(config["id"]), (AppTest,), {})
   return cl
 
 def load_doyunohost():
@@ -85,7 +88,7 @@ def init():
     load_doyunohost()
     
     for key, config in configs.configlist.items():
-      cl = _make_AppTest( str(config["id"]) )
+      cl = _make_AppTest( config )
       setattr(sys.modules[__name__], cl.__name__, cl)
 
 init()
