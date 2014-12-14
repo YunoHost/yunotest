@@ -7,12 +7,14 @@ import os
 import do
 import configs
 
+doyunohost = ''
+
 # http://nose.readthedocs.org/en/latest/writing_tests.html#test-packages
 def setup_package():
-  print 'Setup package %s' % (__name__)
+  pass
 
 def teardown_package():
-  print 'Teardown package %s' % (__name__)
+  pass
 
 def _make_AppTest(appid):
   class AppTest(unittest.TestCase):
@@ -23,23 +25,25 @@ def _make_AppTest(appid):
       @classmethod
       def setUpClass(cls):
         # called once for the class, before all tests
-        print 'setUpClass %s' % (cls.__name__)
+        pass
         
       @classmethod
       def tearDownClass(cls):
         # called once for the class, after all tests
-        print 'tearDownClass %s' % (cls.__name__)
+        pass
 
       def setUp(self):
         # called before each test of this class
-        print 'setUp class %s' % (self.__class__.__name__)
+        pass
       
       def tearDown(self):
         # called after each test of this class
-        print 'tearDown class %s' % (self.__class__.__name__)
+        pass
       
       def attach_file(self, relative_path):
-        # jenkins attachment plugin looks for files in a directory named after module.class
+        # https://wiki.jenkins-ci.org/display/JENKINS/JUnit+Attachments+Plugin
+        # Jenkins attachment plugin looks for files in a directory named after module.class
+        # I did not manage to make it work with logging [ATTACHMENT] snippet
         output_path = os.path.join(os.path.dirname(__file__), "..", "%s.%s" % (__name__,self.__class__.__name__))
         try:
           os.makedirs( output_path )
@@ -59,12 +63,29 @@ def _make_AppTest(appid):
   cl = type("%s" % appid, (AppTest,), {})
   return cl
 
+def load_doyunohost():
+    global doyunohost
+    doyunohost = os.getenv('DOYUNOHOST')
+    if not doyunohost:
+      raise RuntimeError('You need to set DOYUNOHOST env. var')
+      
+    if not os.path.exists( os.path.join(doyunohost, 'deploy.py') ) \
+       or not os.path.exists( os.path.join(doyunohost, 'remove.py') ):
+         raise ValueError('You need to set DOYUNOHOST env. var to a clone of https://github.com/YunoHost/doyunohost')
+         
+    if not os.path.exists( os.path.join(doyunohost, 'config.local') ):
+      raise RuntimeError('$DOYUNOHOST/config.local is not set up')
+      
+    print 'Successfully loaded DOYUNOHOST'
+    #return doyunohost
+
 def init():
-    """ Initialise les classes de test """
+    #doyunohost = load_doyunohost()
+    
+    load_doyunohost()
     
     for key, config in configs.configlist.items():
       cl = _make_AppTest( str(config["id"]) )
       setattr(sys.modules[__name__], cl.__name__, cl)
 
-# initialisation
 init()
