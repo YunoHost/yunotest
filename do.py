@@ -45,14 +45,18 @@ class DigitalOceanServer:
 
   def run_local_cmd(self, command):
     print('> %s' % (command))
-    os.system(command)
+    exit_code = os.system(command)
+    print('< exit code : %s' % (exit_code))
 
   def run_remote_cmd(self, command):
     ssh_command = 'ssh -t -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "root@%s" "export TERM=linux; %s"' \
       % (self.ip, command)
     print('> %s' % (ssh_command))
-    return pexpect.run(ssh_command, withexitstatus=True, \
+    (output, exit_code) = pexpect.run(ssh_command, withexitstatus=True, \
       events={'Administration password:':'%s\n' % (self.admin_password)})
+    print(output)
+    print('< exit code: %s' % (exit_code))
+    return (output, exit_code)
 
   def setup(self):
     self.retrieve_ip()
