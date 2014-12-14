@@ -78,13 +78,8 @@ def load_doyunohost():
          
     if not os.path.exists( os.path.join(doyunohost, 'config.local') ):
       raise RuntimeError('$DOYUNOHOST/config.local is not set up')
-      
-    print 'Successfully loaded DOYUNOHOST'
-    #return doyunohost
 
 def init():
-    #doyunohost = load_doyunohost()
-    
     load_doyunohost()
     
     for key, config in configs.configlist.items():
