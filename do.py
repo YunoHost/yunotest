@@ -34,20 +34,24 @@ class DigitalOceanServer:
     print('Starting to deploy DigitalOcean server %s' % (self.domain))
     command = "python %s/deploy.py --domain %s --password %s" \
        % (self.doyunohost_path, self.domain, self.admin_password)
-    os.system(command)
+    self.run_local_cmd(command)
     print('Successfully deployed DigitalOcean server %s' % (self.domain))
 
   def remove(self):
     print('Removing DigitalOcean server %s' % (self.domain))
     command = "python %s/remove.py --domain %s" % (self.doyunohost_path, self.domain)
-    os.system(command)
+    self.run_local_cmd(command)
     print('Successfully removed DigitalOcean server %s' % (self.domain))
 
+  def run_local_cmd(self, command):
+    print('> %s' % (command))
+    os.system(command)
+
   def run_remote_cmd(self, command):
-    print('Running command : %s' % (command))
-    ssh_wrapper = 'ssh -t -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "root@%s" "export TERM=linux; %s"' \
+    ssh_command = 'ssh -t -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "root@%s" "export TERM=linux; %s"' \
       % (self.ip, command)
-    return pexpect.run(ssh_wrapper, withexitstatus=True, \
+    print('> %s' % (ssh_command))
+    return pexpect.run(ssh_command, withexitstatus=True, \
       events={'Administration password:':'%s\n' % (self.admin_password)})
 
   def setup(self):
@@ -66,8 +70,8 @@ class DigitalOceanServer:
       current_time = time.time()-start_time
       
       command = "dig +short @dynhost.yunohost.org %s" % (self.domain)
-      proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, universal_newlines=True).stdout
-      output = str(proc.read())
+      print '> %s' % (command)
+      (output, exit_status) = pexpect.run(command, withexitstatus=True)
       
       # http://glowingpython.blogspot.fr/2011/06/searching-for-ip-address-using-regular.html
       ip_re = re.compile('(([2][5][0-5]\.)|([2][0-4][0-9]\.)|([0-1]?[0-9]?[0-9]\.)){3}'
