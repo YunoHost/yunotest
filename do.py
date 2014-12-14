@@ -46,9 +46,9 @@ class DigitalOceanServer:
   def run_local_cmd(self, command):
     print('> %s' % (command))
     #exit_code = os.system(command)
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     while 1:
-      line = process.readline()
+      line = process.stdout.readline()
       if not line:
         break
       print line
