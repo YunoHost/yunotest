@@ -51,6 +51,8 @@ class DigitalOceanServer:
       line = process.stdout.readline()
       if not line:
         break
+      if line.endswith('\n'):
+        line = line[:-1]
       print line
     exit_code = process.returncode
     print('< exit code : %s' % (exit_code))
