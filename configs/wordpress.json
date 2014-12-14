@@ -5,7 +5,7 @@
     "domain" : "${MAIN_DOMAIN}",
     "path" : "/wordpress",
     "admin" : "${USER}",
-    "langage" : "en_EN",
+    "language" : "en_EN",
     "public_site" : "Yes"
   }
 }
