@@ -48,9 +48,9 @@ class DigitalOceanServer:
     exit_code = os.system(command)
     print('< exit code : %s' % (exit_code))
 
-  def run_remote_cmd(self, command):
-    ssh_command = 'ssh -t -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "root@%s" "export TERM=linux; %s"' \
-      % (self.ip, command)
+  def run_remote_cmd(self, command, user='root'):
+    ssh_command = 'ssh -t -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "%s@%s" "export TERM=linux; %s"' \
+      % (user, self.ip, command)
     print('> %s' % (ssh_command))
     (output, exit_code) = pexpect.run(ssh_command, withexitstatus=True, \
       events={'Administration password:':'%s\n' % (self.admin_password)})
@@ -60,6 +60,7 @@ class DigitalOceanServer:
 
   def setup(self):
     self.retrieve_ip()
+    self.init_admin_account()
     self.run_remote_cmd("yunohost user create -f Theodocle -l Chancremou -p grumpf -m 'theodocle.chancremou@%s' theodocle" \
       % (self.domain))
 
@@ -91,6 +92,17 @@ class DigitalOceanServer:
       raise RuntimeError("Timeout expired when trying to get IP address for %s" % (self.domain))
     else:
       print('IP retrieved in %s s' % current_time)
+      
+  def init_admin_account(self):
+    # init account creation
+    self.run_remote_cmd("su - admin")
+    
+    # copy ssh keys
+    self.run_remote_cmd("cp -r /root/.ssh /home/admin")
+    self.run_remote_cmd("chown -R admin: /home/admin/.ssh")
+    
+    # try to connect as admin via ssh
+    self.run_remote_cmd("pwd", 'admin')
 
   def install_app(self, test_prop):
     test_prop_resolved = {}
