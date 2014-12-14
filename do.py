@@ -45,7 +45,14 @@ class DigitalOceanServer:
 
   def run_local_cmd(self, command):
     print('> %s' % (command))
-    exit_code = os.system(command)
+    #exit_code = os.system(command)
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    while 1:
+      line = process.readline()
+      if not line:
+        break
+      print line
+    exit_code = p.returncode
     print('< exit code : %s' % (exit_code))
 
   def run_remote_cmd(self, command, user='root'):
