@@ -71,7 +71,7 @@ class DigitalOceanServer:
     self.retrieve_ip()
     self.init_admin_account()
     self.run_remote_cmd("yunohost user create -f Theodocle -l Chancremou -p grumpf -m 'theodocle.chancremou@%s' theodocle" \
-      % (self.domain))
+      % (self.domain), 'admin')
 
   def retrieve_ip(self):
     print('Retrieving IP for %s' % (self.domain))
@@ -122,11 +122,11 @@ class DigitalOceanServer:
          .replace('${RANDOM_PASSWORD}', make_random_password())
     install_args = urllib.urlencode(test_prop_resolved)
     install_command = "yunohost app install '%s' -a '%s'" % (test_prop['git'], install_args)
-    return self.run_remote_cmd(install_command)
+    return self.run_remote_cmd(install_command, 'admin')
     
   def remove_app(self, test_prop):
     remove_command = "yunohost app remove %s" % (test_prop['id'])
-    return self.run_remote_cmd(remove_command)
+    return self.run_remote_cmd(remove_command, 'admin')
 
 # http://preshing.com/20110920/the-python-with-statement-by-example/
 @contextmanager
