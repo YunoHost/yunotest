@@ -76,8 +76,8 @@ class DigitalOceanServer:
   def retrieve_ip(self):
     print('Retrieving IP for %s' % (self.domain))
     
-    # wait for a maximum of 5 min
-    timeout = 5 * 60
+    # wait for a maximum of 15 min
+    timeout = 15 * 60
     start_time = time.time()
     current_time = 0
     while current_time < timeout and not hasattr(self, 'ip'):
