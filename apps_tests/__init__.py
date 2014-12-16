@@ -30,9 +30,12 @@ class PackageContext:
   
   def setup_server(self):
     self.server = do.DigitalOceanServer(self.domain, self.admin_password, self.doyunohost)
-    self.server.deploy()
-    self.server.setup()
-    
+    try:
+      self.server.deploy()
+      self.server.setup()
+    except:
+      self.teardown_server()
+ 
   def teardown_server(self):
     self.server.remove()
 
