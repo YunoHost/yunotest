@@ -5,4 +5,7 @@
     "domain" : "${MAIN_DOMAIN}",
     "path" : "/agendav"
   }
+  "install_depends" : [
+    "baikal"
+  ]
 }

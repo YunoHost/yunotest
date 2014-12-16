@@ -94,6 +94,9 @@ def _make_AppTest(config):
 
       def test_install(self):
         global context
+        for depends in config["install_depends"]:
+          (command_output, exitstatus) = context.server.install_app(configs.configlist[depends])
+          assert exitstatus == 0
         (command_output, exitstatus) = context.server.install_app(config)
         self.attach_data(command_output, "install.txt")
         assert exitstatus == 0
