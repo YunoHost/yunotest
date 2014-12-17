@@ -43,19 +43,27 @@ class DigitalOceanServer:
     self.run_local_cmd(command)
     print('Successfully removed DigitalOcean server %s' % (self.domain))
 
-  def run_local_cmd(self, command):
+  def run_local_cmd(self, command, withoutput = False):
     print('> %s' % (command))
-    #exit_code = os.system(command)
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    full_output = []
     while 1:
       line = process.stdout.readline()
       if not line:
         break
+      if withoutput:
+        full_output.append(line)
       if line.endswith('\n'):
         line = line[:-1]
       print line
     exit_code = process.returncode
     print('< exit code : %s' % (exit_code))
+    
+    if withoutput:
+      ret = (''.join(full_output), exit_code)
+    else:
+      ret = exit_code
+    return ret
 
   def run_remote_cmd(self, command, user='root'):
     ssh_command = 'ssh -t -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "%s@%s" "export TERM=linux; %s"' \
@@ -72,36 +80,21 @@ class DigitalOceanServer:
     self.init_admin_account()
     self.run_remote_cmd("sudo yunohost user create -f Theodocle -l Chancremou -p grumpf -m 'theodocle.chancremou@%s' theodocle" \
       % (self.domain), 'admin')
-
+      
   def retrieve_ip(self):
     print('Retrieving IP for %s' % (self.domain))
+    command = "python %s/ip.py +short --domain %s" % (self.doyunohost_path, self.domain)
+    (output, exitcode) = self.run_local_cmd(command)
     
-    # wait for a maximum of 15 min
-    timeout = 15 * 60
-    start_time = time.time()
-    current_time = 0
-    while current_time < timeout and not hasattr(self, 'ip'):
-      current_time = time.time()-start_time
-      
-      command = "dig +short @dynhost.yunohost.org %s" % (self.domain)
-      print '> %s' % (command)
-      (output, exit_status) = pexpect.run(command, withexitstatus=True)
-      
-      # http://glowingpython.blogspot.fr/2011/06/searching-for-ip-address-using-regular.html
-      ip_re = re.compile('(([2][5][0-5]\.)|([2][0-4][0-9]\.)|([0-1]?[0-9]?[0-9]\.)){3}'
-                         +'(([2][5][0-5])|([2][0-4][0-9])|([0-1]?[0-9]?[0-9]))')
-      match = ip_re.search(output)
-      if match:
-        self.ip = match.group()
-      
-      # sleep for 15s
-      time.sleep(15)
-      
-    if current_time >= timeout:
-      raise RuntimeError("Timeout expired when trying to get IP address for %s" % (self.domain))
-    else:
-      print('IP retrieved in %s s' % current_time)
-      
+    # http://glowingpython.blogspot.fr/2011/06/searching-for-ip-address-using-regular.html
+    ip_re = re.compile('(([2][5][0-5]\.)|([2][0-4][0-9]\.)|([0-1]?[0-9]?[0-9]\.)){3}'
+                       +'(([2][5][0-5])|([2][0-4][0-9])|([0-1]?[0-9]?[0-9]))')
+    match = ip_re.search(output)
+    if match:
+      self.ip = match.group()
+ 
+    print('IP retrieved : %s' % self.ip)
+
   def init_admin_account(self):
     # init account creation
     self.run_remote_cmd("su - admin")
