@@ -122,7 +122,7 @@ def _make_AppTest(config):
         m = re.search('https:\/\/github.com\/(.+)\/(.+)', config["git"])
         assert len(m.groups()) == 2, "unable to parse github url %s" % (config["git"])
         manifest_uri = 'https://raw.githubusercontent.com/{owner}/{repo}/master/manifest.json' \
-          .format( owner = m.groups(1), repo = m.groups(2) )
+          .format( owner = m.group(1), repo = m.group(2) )
         r = requests.get(manifest_uri)
         assert r.status_code == 200, "unable to retrieve manifest.json at %s" % (manifest_uri)
         manifest_content = json.loads(r.content)
