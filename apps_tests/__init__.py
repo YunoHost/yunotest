@@ -99,8 +99,8 @@ def _make_AppTest(config):
         global context
         if 'install_depends' in config:
           for depends in config["install_depends"]:
-            (command_output, exitstatus) = context.server.install_app(configs.configlist[depends])
-            assert exitstatus == 0
+            (command_output_dep, exitstatus_dep) = context.server.install_app(configs.configlist[depends])
+            assert exitstatus_dep == 0
         (command_output, exitstatus) = context.server.install_app(config)
         self.attach_data(command_output, "install.txt")
         assert exitstatus == 0
@@ -109,6 +109,9 @@ def _make_AppTest(config):
         global context
         (command_output, exitstatus) = context.server.remove_app(config)
         self.attach_data(command_output, "remove.txt")
+        if 'install_depends' in config:
+          for depends in config["install_depends"]:
+            (command_output_dep, exitstatus_dep) = context.server.remove_app(configs.configlist[depends])
         assert exitstatus == 0
 
       def test_manifest(self):
