@@ -3,7 +3,7 @@
   "git" : "https://github.com/julienmalik/baikal_ynh",
   "install" : {
     "domain" : "${MAIN_DOMAIN}",
-    "path" : "/phpmyadmin",
+    "path" : "/baikal",
     "password" : "${RANDOM_PASSWORD}"
   }
 }
