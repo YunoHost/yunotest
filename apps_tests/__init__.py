@@ -3,6 +3,10 @@ import unittest
 import sys
 import pkgutil
 import os
+import re
+import requests
+import json
+import jsonschema
 
 import do
 import configs
@@ -103,7 +107,7 @@ def _make_AppTest(config):
             assert exitstatus_dep == 0
         (command_output, exitstatus) = context.server.install_app(config)
         self.attach_data(command_output, "install.txt")
-        assert exitstatus == 0
+        assert exitstatus == 0, "install exited with non-zero code"
 
       def test_remove(self):
         global context
@@ -112,10 +116,19 @@ def _make_AppTest(config):
         if 'install_depends' in config:
           for depends in config["install_depends"]:
             (command_output_dep, exitstatus_dep) = context.server.remove_app(configs.configlist[depends])
-        assert exitstatus == 0
+        assert exitstatus == 0, "remove exited with non-zero code"
 
-      def test_manifest(self):
-        pass
+      def test_manifest_schema(self):
+        m = re.search('https:\/\/github.com\/(.+)\/(.+)', config["git"])
+        assert len(m.groups()) == 2, "unable to parse github url %s" % (config["git"])
+        manifest_uri = 'https://raw.githubusercontent.com/{owner}/{repo}/master/manifest.json' \
+          .format( owner = m.groups(1), repo = m.groups(2) )
+        r = requests.get(manifest_uri)
+        assert r.status_code == 200, "unable to retrieve manifest.json at %s" % (manifest_uri)
+        manifest_content = json.loads(r.content)
+        with open(os.path.join(os.path.dirname(__file__), "manifest_schema.json")) as schemaf:
+          schema = json.loads(str(schemaf.read()))
+        jsonschema.validate(manifest_content, schema)
 
   cl = type("%s" % str(config["id"]), (AppTest,), {})
   return cl

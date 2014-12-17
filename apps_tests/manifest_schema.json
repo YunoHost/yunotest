@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title" : "Yunohost application manifest schema",
+  "definitions" : {
+    "boolean_string" : {
+      "type" : "string",
+      "enum" : [  "true", "false" ]
+    },
+    "email" : {
+      "type" : "string",
+      "format" : "email"
+    },
+    "uri" : {
+      "type" : "string",
+      "format" : "uri"
+    },
+    "developer" : {
+      "type" : "object",
+      "properties" : {
+        "name" :  { "type" : "string" },
+        "email" : { "$ref" : "#/definitions/email" },
+        "url" :   { "$ref" : "#/definitions/uri" }
+      },
+      "required" : ["name", "email"],
+      "additionalProperties": false
+    },
+    "description" : {
+      "type" : "object"
+    },
+    "multi_instance" : { "$ref" : "#/definitions/boolean_string" },
+    "arguments" : {
+      "type" : "object",
+      "properties" : {
+        "install" : {
+          "type" : "array",
+          "items": { "$ref" : "#/definitions/install_item" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "install_item" : {
+      "type" : "object",
+      "properties" : {
+        "name" :     { "type" : "string" },
+        "ask" :      { "$ref" : "#/definitions/install_item_ask" },
+        "type" :     { "$ref" : "#/definitions/install_item_type" },
+        "example" :  { "type" : "string" },
+        "default" :  { "type" : "string" },
+        "choices" :  { "$ref" : "#/definitions/install_item_choice" },
+        "pattern" :  { "type" : "string" },
+        "optional" : { "$ref" : "#/definitions/boolean_string" }
+      },
+      "required" : ["name", "ask"]
+    },
+    "install_item_ask" : {
+      "type" : "object",
+      "properties" : {
+        "en" : { "type" : "string" }
+      },
+      "additionalProperties": { "type": "string" },
+      "required" : ["en"]
+    },
+    "install_item_type" : {
+      "type" : "string",
+      "enum" : ["domain", "user", "app", "password", "path"]
+    },
+    "install_item_choice" : {
+      "type" : "array",
+      "items": { "type" : "string" }
+    }
+  },
+  "type" : "object",
+  "properties" : {
+    "name" :           { "type" : "string" },
+    "id" :             { "type" : "string" },
+    "description" :    { "$ref" : "#/definitions/description" },
+    "developer" :      { "$ref" : "#/definitions/developer" },
+    "multi_instance" : { "$ref" : "#/definitions/multi_instance" },
+    "arguments" :      { "$ref" : "#/definitions/arguments" }
+  },
+  "additionalProperties": false,
+  "required" : [
+    "name",
+    "id",
+    "description",
+    "developer",
+    "multi_instance",
+    "arguments"
+  ]
+}
