@@ -84,7 +84,7 @@ class DigitalOceanServer:
   def retrieve_ip(self):
     print('Retrieving IP for %s' % (self.domain))
     command = "python %s/ip.py +short --domain %s" % (self.doyunohost_path, self.domain)
-    (output, exitcode) = self.run_local_cmd(command, withoutput)
+    (output, exitcode) = self.run_local_cmd(command, True)
     
     # http://glowingpython.blogspot.fr/2011/06/searching-for-ip-address-using-regular.html
     ip_re = re.compile('(([2][5][0-5]\.)|([2][0-4][0-9]\.)|([0-1]?[0-9]?[0-9]\.)){3}'
