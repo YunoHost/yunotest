@@ -25,7 +25,12 @@
       "additionalProperties": false
     },
     "description" : {
-      "type" : "object"
+      "type" : "object",
+      "properties" : {
+        "en" : { "type" : "string" }
+      },
+      "additionalProperties": { "type": "string" },
+      "required" : ["en"]
     },
     "multi_instance" : { "$ref" : "#/definitions/boolean_string" },
     "arguments" : {
