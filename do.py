@@ -110,6 +110,7 @@ class DigitalOceanServer:
   def deploy_scripts(self):
     scp_command = 'scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no %s "%s@%s:"' \
       % (os.path.join(os.path.dirname(__file__), 'install_app_wrapper.sh'), 'admin', self.ip)
+    pexpect.run(scp_command)
     self.run_remote_cmd('chmod +x /home/admin/install_app_wrapper.sh')
 
   def install_app(self, test_prop):
