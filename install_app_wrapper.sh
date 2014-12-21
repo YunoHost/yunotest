@@ -10,7 +10,6 @@ TMP_SCRIPT=$TMPDIR/
 # Setup sudoers env_file
 cat << EOF > $TMPDIR/sudoers_env
 #!/bin/sh
-
 #export INSTW_DBGLVL=4
 #export INSTW_DBGFILE=$TMPDIR/dbg
 export INSTW_ROOTPATH=$TMPDIR
@@ -76,22 +75,30 @@ egrep "#success$" /${TMPDIR}/newfiles.tmp | cut -f 4 | egrep -v "#success" | sor
 mv ${TMPDIR}/newfiles.tmp ${TMPDIR}/newfiles.installwatch
 sort -u < ${TMPDIR}/newfiles | uniq | while read file; do
 		if sudo ls $file >/dev/null 2>&1 ; then
-			echo $file >> ${TMPDIR}/newfiles.tmp
+      if dpkg -S $file ; then
+			  echo $file >> ${TMPDIR}/newfiles.tmp
+      fi
 		fi
 	done
 cp ${TMPDIR}/newfiles.tmp ${TMPDIR}/newfiles
 
-EXCLUDE="/var/cache/yunohost,/etc/sudoers,/etc/sudoers.d"
+EXCLUDE="/var/cache/yunohost,/etc/sudoers,/etc/sudoers.d,/var/lib/apt,/var/cache/apt,/var/lib/dpkg"
 for exclude in `echo $EXCLUDE | awk '{ split ($0, files,","); for(i=1; files[i] != ""; i++) print files[i];}'`; do
    if [ -d $exclude ]; then  # If it's a directory, ignore everything below it
       egrep -v "^$exclude" < ${TMPDIR}/newfiles > ${TMPDIR}/newfiles.tmp
    else
       if [ -f $exclude ]; then  # If it's a file, ignore just this one
-	 egrep -v "^$exclude$" < ${TMPDIR}/newfiles > ${TMPDIR}/newfiles.tmp
+         egrep -v "^$exclude$" < ${TMPDIR}/newfiles > ${TMPDIR}/newfiles.tmp
       fi
    fi
    cp ${TMPDIR}/newfiles.tmp ${TMPDIR}/newfiles
 done
+
+# Show permissions for each file
+cat ${TMPDIR}/newfiles | while read file; do
+  (echo -n "$file "; ls -al $file) | awk '{split ($0, r," "); print r[2],'\t',r[4],'\t', r[5], '\t', r[1] }' >> ${TMPDIR}/newfiles.tmp
+  done
+cp ${TMPDIR}/newfiles.tmp ${TMPDIR}/newfiles
 
 cp $TMPDIR/newfiles $OUTPUT
 
