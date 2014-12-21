@@ -112,7 +112,7 @@ class DigitalOceanServer:
     scp_command = 'scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no %s "%s@%s:"' \
       % (os.path.join(os.path.dirname(__file__), 'install_app_wrapper.sh'), 'admin', self.ip)
     print('> %s' % (scp_command))
-    (output, exitcode) = pexpect.run(scp_command, withexitstatus=True, timeout= 60)
+    (output, exit_code) = pexpect.run(scp_command, withexitstatus=True, timeout= 60)
     print('< exit code: %s' % (exit_code))
     
     self.run_remote_cmd('chmod +x /home/admin/install_app_wrapper.sh')
