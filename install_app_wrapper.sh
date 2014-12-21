@@ -60,7 +60,9 @@ chmod +x $TMPDIR/teardown_sudoers
 sudo yunohost app install -a "$ARGS" $APP
 /bin/sh $TMPDIR/teardown_sudoers
 
-sudo chown -R admin: $TMPDIR
+
+
+sudo su << EOF
 
 # regular files
 cat ${TMPDIR}/newfiles.tmp | egrep -v '^[-0-9][0-9]*[[:space:]]*(unlink|access)' | cut -f 3 | egrep -v "^(/dev|/tmp)" | sort -u > ${TMPDIR}/newfiles
@@ -77,6 +79,9 @@ sort -u < ${TMPDIR}/newfiles | uniq | while read file; do
 		if sudo ls $file >/dev/null 2>&1 ; then      
       if [[ -f  $file ]] && ! (dpkg -S $file >/dev/null 2>&1) ; then
 			  echo $file >> ${TMPDIR}/newfiles.tmp
+      fi
+      if [[ -d $file ]] ; then
+        echo $file >> ${TMPDIR}/newfiles.tmp
       fi
 		fi
 	done
@@ -102,4 +107,8 @@ mv ${TMPDIR}/newfiles.tmp ${TMPDIR}/newfiles
 
 cp $TMPDIR/newfiles $OUTPUT
 
-#rm -rf $TMPDIR
+chown -R admin: $TMPDIR
+
+EOF
+
+rm -rf $TMPDIR
