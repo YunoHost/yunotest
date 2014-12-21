@@ -6,6 +6,7 @@ import os
 configlist = {}
 
 def init():
+  global configlist
   thisdir = os.path.dirname(__file__)
   for json_filename in os.listdir(thisdir):
     (app, ext) = os.path.splitext(json_filename)
