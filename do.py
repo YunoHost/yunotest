@@ -78,6 +78,7 @@ class DigitalOceanServer:
   def setup(self):
     self.retrieve_ip()
     self.init_admin_account()
+    self.deploy_scripts()
     self.run_remote_cmd("sudo yunohost user create -f Theodocle -l Chancremou -p grumpf -m 'theodocle.chancremou@%s' theodocle" \
       % (self.domain), 'admin')
       
@@ -106,6 +107,11 @@ class DigitalOceanServer:
     # try to connect as admin via ssh
     self.run_remote_cmd("pwd", 'admin')
 
+  def deploy_scripts(self):
+    scp_command = 'scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no %s "%s@%s:"' \
+      % (os.path.join(os.path.dirname(__file__), 'install_app_wrapper.sh', 'admin', self.ip)
+    self.run_remote_cmd('chmod +x /home/admin/install_app_wrapper.sh')
+
   def install_app(self, test_prop):
     test_prop_resolved = {}
     for key, value in test_prop['install'].items():
@@ -114,8 +120,11 @@ class DigitalOceanServer:
          .replace('${USER}', 'theodocle') \
          .replace('${RANDOM_PASSWORD}', make_random_password())
     install_args = urllib.urlencode(test_prop_resolved)
-    install_command = "sudo yunohost app install '%s' -a '%s'" % (test_prop['git'], install_args)
-    return self.run_remote_cmd(install_command, 'admin')
+    #install_command = "sudo yunohost app install '%s' -a '%s'" % (test_prop['git'], install_args)
+    install_command = "/home/admin/install_app_wrapper.sh '%s' '%s' /tmp/%s.installed_files.txt"  % (test_prop['git'], install_args, test_prop['id'])
+    (install_logs, exitcode) = self.run_remote_cmd(install_command, 'admin')
+    (installed_files, exitcode2) = self.run_remote_cmd("cat /tmp/%s.installed_files.txt" % (test_prop['git']))
+    return (install_logs, exitcode, installed_files)
     
   def remove_app(self, test_prop):
     remove_command = "sudo yunohost app remove %s" % (test_prop['id'])

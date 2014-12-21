@@ -105,8 +105,9 @@ def _make_AppTest(config):
           for depends in config["install_depends"]:
             (command_output_dep, exitstatus_dep) = context.server.install_app(configs.configlist[depends])
             assert exitstatus_dep == 0
-        (command_output, exitstatus) = context.server.install_app(config)
-        self.attach_data(command_output, "install.txt")
+        (install_logs, exitstatus, installed_files) = context.server.install_app(config)
+        self.attach_data(install_logs, "install.txt")
+        self.attach_data(installed_files, "installed_files.txt")
         assert exitstatus == 0, "install exited with non-zero code"
 
       def test_remove(self):
