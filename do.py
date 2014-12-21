@@ -80,9 +80,10 @@ class DigitalOceanServer:
     self.retrieve_ip()
     self.init_admin_account()
     self.deploy_scripts()
+    self.run_remote_cmd("apt-get install checkinstall -y")
     self.run_remote_cmd("sudo yunohost user create -f Theodocle -l Chancremou -p grumpf -m 'theodocle.chancremou@%s' theodocle" \
       % (self.domain), 'admin')
-      
+
   def retrieve_ip(self):
     print('Retrieving IP for %s' % (self.domain))
     command = "python %s/ip.py +short --domain %s" % (self.doyunohost_path, self.domain)
