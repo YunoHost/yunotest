@@ -129,7 +129,7 @@ class DigitalOceanServer:
     #install_command = "sudo yunohost app install '%s' -a '%s'" % (test_prop['git'], install_args)
     install_command = "/home/admin/install_app_wrapper.sh '%s' '%s' /tmp/%s.installed_files.txt"  % (test_prop['git'], install_args, test_prop['id'])
     (install_logs, exitcode) = self.run_remote_cmd(install_command, 'admin')
-    (installed_files, exitcode2) = self.run_remote_cmd("cat /tmp/%s.installed_files.txt" % (test_prop['git']))
+    (installed_files, exitcode2) = self.run_remote_cmd("cat /tmp/%s.installed_files.txt" % (test_prop['id']))
     return (install_logs, exitcode, installed_files)
     
   def remove_app(self, test_prop):
