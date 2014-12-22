@@ -81,6 +81,15 @@ class DigitalOceanServer:
     self.init_admin_account()
     self.deploy_scripts()
     self.run_remote_cmd("apt-get install checkinstall -y")
+    
+    # install casperjs
+    # self.run_remote_cmd("mkdir -p /opt/yunotest")
+    # self.run_remote_cmd("cd /tmp; wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2; tar xjf phantomjs-1.9.8-linux-x86_64.tar.bz2; mv /tmp/phantomjs-1.9.8-linux-x86_64 /opt/yunotest/phantomjs")
+    # self.run_remote_cmd("cd /tmp; wget -O /tmp/casperjs.tar.gz https://github.com/n1k0/casperjs/tarball/master; mkdir /tmp/casperjs; tar xzf -C /tmp/casperjs --strip-components 1 casperjs.tar.gz; mv /tmp/casperjs /opt/yunotest/casperjs")
+    
+    # create YunoHost user
+    self.user = 'theodocle'
+    self.user_password = 'grumpf'
     self.run_remote_cmd("sudo yunohost user create -f Theodocle -l Chancremou -p grumpf -m 'theodocle.chancremou@%s' theodocle" \
       % (self.domain), 'admin')
 
@@ -118,6 +127,13 @@ class DigitalOceanServer:
     
     self.run_remote_cmd('chmod +x /home/admin/install_app_wrapper.sh')
 
+  def get_remote_file(self, src, dst):
+    scp_command = 'scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no %s@%s:%s %s' \
+      % ('root', self.ip, src, dst)
+    print('> %s' % (scp_command))
+    (output, exit_code) = pexpect.run(scp_command, withexitstatus=True, timeout= 60)
+    print('> %s' % (scp_command))
+    
   def install_app(self, test_prop):
     test_prop_resolved = {}
     for key, value in test_prop['install'].items():
@@ -126,11 +142,11 @@ class DigitalOceanServer:
          .replace('${USER}', 'theodocle') \
          .replace('${RANDOM_PASSWORD}', make_random_password())
     install_args = urllib.urlencode(test_prop_resolved)
-    #install_command = "sudo yunohost app install '%s' -a '%s'" % (test_prop['git'], install_args)
     install_command = "/home/admin/install_app_wrapper.sh '%s' '%s' /tmp/%s.installed_files.txt"  % (test_prop['git'], install_args, test_prop['id'])
     (install_logs, exitcode) = self.run_remote_cmd(install_command, 'admin')
-    (installed_files, exitcode2) = self.run_remote_cmd("cat /tmp/%s.installed_files.txt" % (test_prop['id']))
-    return (install_logs, exitcode, installed_files)
+    #(installed_files, exitcode2) = self.run_remote_cmd("cat /tmp/%s.installed_files.txt" % (test_prop['id']))
+    #return (install_logs, exitcode, installed_files)
+    return (install_logs, exitcode)
     
   def remove_app(self, test_prop):
     remove_command = "sudo yunohost app remove %s" % (test_prop['id'])

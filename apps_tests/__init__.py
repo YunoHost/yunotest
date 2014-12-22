@@ -7,6 +7,7 @@ import re
 import requests
 import json
 import jsonschema
+import pexpect
 
 import do
 import configs
@@ -77,26 +78,33 @@ def _make_AppTest(config):
       def tearDown(self):
         # called after each test of this class
         pass
-      
-      def attach_file(self, relative_path):
+        
+      def get_tmp_dir(self):
+        # a dir in the jenkins workspace, so it get cleaned up automatically at each build
+        path = os.path.join(os.path.dirname(__file__), "..", "tmp")
+        try:
+          os.makedirs( path )
+        except os.error:
+          pass
+        return path
+        
+      def get_attachments_dir(self):
         # https://wiki.jenkins-ci.org/display/JENKINS/JUnit+Attachments+Plugin
         # Jenkins attachment plugin looks for files in a directory named after module.class
         # I did not manage to make it work with logging [ATTACHMENT] snippet
-        output_path = os.path.join(os.path.dirname(__file__), "..", "%s.%s" % (__name__,self.__class__.__name__))
+        path = os.path.join(os.path.dirname(__file__), "..", "%s.%s" % (__name__,self.__class__.__name__))
         try:
-          os.makedirs( output_path )
+          os.makedirs( path )
         except os.error:
           pass
-        command = 'cp %s %s' % ( os.path.join(os.getcwd(), relative_path), output_path)
+        return path
+      
+      def attach_file(self, relative_path):
+        command = 'cp %s %s' % ( os.path.join(os.getcwd(), relative_path), self.get_attachments_dir())
         os.system( command )
         
       def attach_data(self, data, filename):
-        output_path = os.path.join(os.path.dirname(__file__), "..", "%s.%s" % (__name__,self.__class__.__name__))
-        try:
-          os.makedirs( output_path )
-        except os.error:
-          pass
-        with open(os.path.join(output_path, filename), "w") as f:
+        with open(os.path.join(self.get_attachments_dir(), filename), "w") as f:
           f.write(data)
 
       def test_install(self):
@@ -107,9 +115,27 @@ def _make_AppTest(config):
             assert exitstatus_dep == 0
         (install_logs, exitstatus, installed_files) = context.server.install_app(config)
         self.attach_data(install_logs, "install.txt")
-        self.attach_data(installed_files, "installed_files.txt")
+        #self.attach_data(installed_files, "installed_files.txt")
+        context.server.get_remote_file("/tmp/%s.installed_files.txt" % config["id"], get_attachments_dir())
         assert exitstatus == 0, "install exited with non-zero code"
 
+      def test_screenshot(self):
+        with open( os.path.join(__file__, "screenshot.js.tpl") ) as tplf:
+          tpl = tplf.readlines()
+          script = tpl \
+            .replace(YNH_PORTAL_URL, "https://%s/yunohost/sso" % (context.server.domain)) \
+            .replace(YNH_USER, context.server.user) \
+            .replace(YNH_PASSWORD, context.server.user_password) \
+            .replace(YNH_APP_URL, "https://%s%s" % (context.server.domain, config["install"]["path"])) \
+            .replace(YNH_SCREENSHOT_DIR, self.get_attachments_dir()) \
+            .replace(YNH_SCREENSHOT_FILENAME, "%s.png" % (config["id"]) )
+        script_location = "%s/%s.js" % (self.get_tmp_dir(), config["id"])
+        with open( script_location , "w" ) as scriptf:
+          scriptf.writelines(script)
+        (output, exitcode) = pexpect.run("PATH=/opt/yunotest/casperjs/bin:/opt/yunotest/phantomjs/bin:$PATH casperjs %s" % (script_location), withexitstatus=True, timeout= 60)
+        print output
+        assert exitcode == 0
+        
       def test_remove(self):
         global context
         (command_output, exitstatus) = context.server.remove_app(config)
