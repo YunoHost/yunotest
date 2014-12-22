@@ -60,33 +60,28 @@ chmod +x $TMPDIR/teardown_sudoers
 sudo yunohost app install -a "$ARGS" $APP
 /bin/sh $TMPDIR/teardown_sudoers
 
+sudo chown -R admin: $TMPDIR
 
+cp ${TMPDIR}/newfiles.tmp ${TMPDIR}/newfiles.orig
 
-sudo su << EOF
-
+echo "Extracting new files"
 # regular files
-cat ${TMPDIR}/newfiles.tmp | egrep -v '^[-0-9][0-9]*[[:space:]]*(unlink|access)' | cut -f 3 | egrep -v "^(/dev|/tmp)" | sort -u > ${TMPDIR}/newfiles
+cat ${TMPDIR}/newfiles.tmp | egrep -v '^[-0-9][0-9]*[[:space:]]*(unlink|access)' | cut -f 3 | egrep -v "^(/dev|/tmp)" | egrep "^/" | sort -u > ${TMPDIR}/newfiles
 # symlinks
-cat ${TMPDIR}/newfiles.tmp | egrep -v '^[-0-9][0-9]*[[:space:]]*(unlink|access)' | cut -f 4 | egrep -v "^(/dev|/tmp)" | grep -v "#success" | sort -u >> ${TMPDIR}/newfiles
+cat ${TMPDIR}/newfiles.tmp | egrep -v '^[-0-9][0-9]*[[:space:]]*(unlink|access)' | cut -f 4 | egrep -v "^(/dev|/tmp)" | grep -v "#success" | egrep "^/" | sort -u >> ${TMPDIR}/newfiles
 
 # modified files
+echo "Extracting modified files"
 egrep "#success$" /${TMPDIR}/newfiles.tmp | cut -f 3 | sort -u  > ${TMPDIR}/modified
 egrep "#success$" /${TMPDIR}/newfiles.tmp | cut -f 4 | egrep -v "#success" | sort -u >> ${TMPDIR}/modified
 
 # OK, now we clean it up a bit
 mv ${TMPDIR}/newfiles.tmp ${TMPDIR}/newfiles.installwatch
-sort -u < ${TMPDIR}/newfiles | uniq | while read file; do
-		if sudo ls $file >/dev/null 2>&1 ; then      
-      if [[ -f  $file ]] && ! (dpkg -S $file >/dev/null 2>&1) ; then
-			  echo $file >> ${TMPDIR}/newfiles.tmp
-      fi
-      if [[ -d $file ]] ; then
-        echo $file >> ${TMPDIR}/newfiles.tmp
-      fi
-		fi
-	done
+echo "Sorting..."
+sort -u < ${TMPDIR}/newfiles | uniq > ${TMPDIR}/newfiles.tmp
 mv ${TMPDIR}/newfiles.tmp ${TMPDIR}/newfiles
 
+echo "Excluding some dirs..."
 EXCLUDE="/var/cache/yunohost,/etc/sudoers,/etc/sudoers.d,/var/lib/apt,/var/cache/apt,/var/lib/dpkg"
 for exclude in `echo $EXCLUDE | awk '{ split ($0, files,","); for(i=1; files[i] != ""; i++) print files[i];}'`; do
    if [ -d $exclude ]; then  # If it's a directory, ignore everything below it
@@ -99,16 +94,26 @@ for exclude in `echo $EXCLUDE | awk '{ split ($0, files,","); for(i=1; files[i] 
    mv ${TMPDIR}/newfiles.tmp ${TMPDIR}/newfiles
 done
 
-# Show permissions for each file
+echo "Filtering non-existant files and files from deb packages..."
+cat ${TMPDIR}/newfiles | while read file; do
+    if sudo test -f $file ; then
+      if (echo $file | grep "^/var/www" > /dev/null) ; then
+        echo $file >> ${TMPDIR}/newfiles.tmp
+      elif !(dpkg -S $file >/dev/null 2>&1) ; then
+        echo $file >> ${TMPDIR}/newfiles.tmp
+      fi
+    elif sudo test -d $file ; then
+      echo $file >> ${TMPDIR}/newfiles.tmp
+    fi
+	done
+mv ${TMPDIR}/newfiles.tmp ${TMPDIR}/newfiles
+
+echo "Getting permissions..."
 cat ${TMPDIR}/newfiles | while read f; do
-  echo -e "$(stat $f --format=%A)\t$(stat $f --format=%U)\t$(stat $f --format=%G)\t$f" >> ${TMPDIR}/newfiles.tmp
+  (sudo stat $f --format="%A %U %G" | awk -F' ' '{printf("%10s %10s %10s     %s", $1, $2, $3, $4)}'; echo $f) >> ${TMPDIR}/newfiles.tmp
   done
 mv ${TMPDIR}/newfiles.tmp ${TMPDIR}/newfiles
 
 cp $TMPDIR/newfiles $OUTPUT
-
-chown -R admin: $TMPDIR
-
-EOF
 
 rm -rf $TMPDIR
