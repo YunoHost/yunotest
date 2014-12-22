@@ -70,7 +70,7 @@ class DigitalOceanServer:
     ssh_command = 'ssh -t -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "%s@%s" "export TERM=linux; %s"' \
       % (user, self.ip, command)
     print('> %s' % (ssh_command))
-    (output, exit_code) = pexpect.run(ssh_command, withexitstatus=True, timeout= 10*60, \
+    (output, exit_code) = pexpect.run(ssh_command, withexitstatus=True, timeout= 30*60, \
       events={'Administration password:':'%s\n' % (self.admin_password)})
     print(output)
     print('< exit code: %s' % (exit_code))
