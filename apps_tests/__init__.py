@@ -121,7 +121,7 @@ def _make_AppTest(config):
 
       def test_screenshot(self):
         with open( os.path.join(os.path.dirname(__file__), "screenshot.js.tpl") ) as tplf:
-          tpl = tplf.readlines()
+          tpl = str(tplf.read())
           script = tpl \
             .replace(YNH_PORTAL_URL, "https://%s/yunohost/sso" % (context.server.domain)) \
             .replace(YNH_USER, context.server.user) \
@@ -131,7 +131,7 @@ def _make_AppTest(config):
             .replace(YNH_SCREENSHOT_FILENAME, "%s.png" % (config["id"]) )
         script_location = "%s/%s.js" % (self.get_tmp_dir(), config["id"])
         with open( script_location , "w" ) as scriptf:
-          scriptf.writelines(script)
+          scriptf.write(script)
         (output, exitstatus) = pexpect.run("PATH=/opt/yunotest/casperjs/bin:/opt/yunotest/phantomjs/bin:$PATH casperjs %s" % (script_location), withexitstatus=True, timeout= 60)
         print output
         assert exitstatus == 0, "test_screenshot exited with non-zero code"
