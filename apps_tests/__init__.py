@@ -113,14 +113,14 @@ def _make_AppTest(config):
           for depends in config["install_depends"]:
             (command_output_dep, exitstatus_dep) = context.server.install_app(configs.configlist[depends])
             assert exitstatus_dep == 0
-        (install_logs, exitstatus, installed_files) = context.server.install_app(config)
+        (install_logs, exitstatus) = context.server.install_app(config)
         self.attach_data(install_logs, "install.txt")
         #self.attach_data(installed_files, "installed_files.txt")
         context.server.get_remote_file("/tmp/%s.installed_files.txt" % config["id"], get_attachments_dir())
         assert exitstatus == 0, "install exited with non-zero code"
 
       def test_screenshot(self):
-        with open( os.path.join(__file__, "screenshot.js.tpl") ) as tplf:
+        with open( os.path.join(os.path.dirname(__file__), "screenshot.js.tpl") ) as tplf:
           tpl = tplf.readlines()
           script = tpl \
             .replace(YNH_PORTAL_URL, "https://%s/yunohost/sso" % (context.server.domain)) \
@@ -132,9 +132,9 @@ def _make_AppTest(config):
         script_location = "%s/%s.js" % (self.get_tmp_dir(), config["id"])
         with open( script_location , "w" ) as scriptf:
           scriptf.writelines(script)
-        (output, exitcode) = pexpect.run("PATH=/opt/yunotest/casperjs/bin:/opt/yunotest/phantomjs/bin:$PATH casperjs %s" % (script_location), withexitstatus=True, timeout= 60)
+        (output, exitstatus) = pexpect.run("PATH=/opt/yunotest/casperjs/bin:/opt/yunotest/phantomjs/bin:$PATH casperjs %s" % (script_location), withexitstatus=True, timeout= 60)
         print output
-        assert exitcode == 0
+        assert exitstatus == 0, "test_screenshot exited with non-zero code"
         
       def test_remove(self):
         global context
