@@ -116,7 +116,7 @@ def _make_AppTest(config):
         (install_logs, exitstatus) = context.server.install_app(config)
         self.attach_data(install_logs, "install.txt")
         #self.attach_data(installed_files, "installed_files.txt")
-        context.server.get_remote_file("/tmp/%s.installed_files.txt" % config["id"], get_attachments_dir())
+        context.server.get_remote_file("/tmp/%s.installed_files.txt" % config["id"], self.get_attachments_dir())
         assert exitstatus == 0, "install exited with non-zero code"
 
       def test_screenshot(self):
