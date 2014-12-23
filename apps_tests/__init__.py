@@ -123,12 +123,12 @@ def _make_AppTest(config):
         with open( os.path.join(os.path.dirname(__file__), "screenshot.js.tpl") ) as tplf:
           tpl = str(tplf.read())
           script = tpl \
-            .replace(YNH_PORTAL_URL, "https://%s/yunohost/sso" % (context.server.domain)) \
-            .replace(YNH_USER, context.server.user) \
-            .replace(YNH_PASSWORD, context.server.user_password) \
-            .replace(YNH_APP_URL, "https://%s%s" % (context.server.domain, config["install"]["path"])) \
-            .replace(YNH_SCREENSHOT_DIR, self.get_attachments_dir()) \
-            .replace(YNH_SCREENSHOT_FILENAME, "%s.png" % (config["id"]) )
+            .replace("YNH_PORTAL_URL", "https://%s/yunohost/sso" % (context.server.domain)) \
+            .replace("YNH_USER", context.server.user) \
+            .replace("YNH_PASSWORD", context.server.user_password) \
+            .replace("YNH_APP_URL", "https://%s%s" % (context.server.domain, config["install"]["path"])) \
+            .replace("YNH_SCREENSHOT_DIR", self.get_attachments_dir()) \
+            .replace("YNH_SCREENSHOT_FILENAME", "%s.png" % (config["id"]) )
         script_location = "%s/%s.js" % (self.get_tmp_dir(), config["id"])
         with open( script_location , "w" ) as scriptf:
           scriptf.write(script)
