@@ -119,7 +119,6 @@ def _make_AppTest(config):
         context.server.get_remote_file("/tmp/%s.installed_files.txt" % config["id"], self.get_attachments_dir())
         assert exitstatus == 0, "install exited with non-zero code"
 
-      def test_screenshot(self):
         with open( os.path.join(os.path.dirname(__file__), "screenshot.js.tpl") ) as tplf:
           tpl = str(tplf.read())
           script = tpl \
