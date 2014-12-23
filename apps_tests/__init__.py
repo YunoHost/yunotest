@@ -30,7 +30,6 @@ class PackageContext:
            
       if not os.path.exists( os.path.join(doyunohost, 'config.local') ):
         raise RuntimeError('$DOYUNOHOST/config.local is not set up')
-      
       return doyunohost
   
   def setup_server(self):
@@ -131,7 +130,7 @@ def _make_AppTest(config):
         script_location = "%s/%s.js" % (self.get_tmp_dir(), config["id"])
         with open( script_location , "w" ) as scriptf:
           scriptf.write(script)
-        (output, exitstatus) = pexpect.run("PATH=/opt/yunotest/casperjs/bin:/opt/yunotest/phantomjs/bin:$PATH casperjs %s" % (script_location), withexitstatus=True, timeout= 60)
+        (output, exitstatus) = pexpect.run("casperjs %s" % (script_location), withexitstatus=True, timeout= 60)
         print output
         assert exitstatus == 0, "test_screenshot exited with non-zero code"
         
