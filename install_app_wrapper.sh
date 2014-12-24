@@ -58,7 +58,13 @@ chmod +x $TMPDIR/teardown_sudoers
 
 /bin/sh $TMPDIR/setup_sudoers
 sudo yunohost app install -a "$ARGS" $APP
+EXIT_STATUS=$?
 /bin/sh $TMPDIR/teardown_sudoers
+
+if [[ "$EXIT_STATUS" -ne "0" ]]; then
+  rm -rf $TMPDIR
+  exit $EXIT_STATUS
+fi
 
 sudo chown -R admin: $TMPDIR
 
@@ -117,3 +123,5 @@ mv ${TMPDIR}/newfiles.tmp ${TMPDIR}/newfiles
 cp $TMPDIR/newfiles $OUTPUT
 
 rm -rf $TMPDIR
+
+exit $EXIT_STATUS
