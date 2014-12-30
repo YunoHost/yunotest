@@ -4,7 +4,7 @@
   "install" : {
     "domain" : "${MAIN_DOMAIN}",
     "path" : "/glpi",
-    "admin" : "${USER}"
+    "admin" : "${USER}",
     "language" : "fr_FR"
   }
 }

@@ -3,7 +3,7 @@
   "git" : "https://github.com/courgette/yourls_ynh",
   "install" : {
     "domain" : "${MAIN_DOMAIN}",
-    "path" : "/wallabag",
+    "path" : "/yourls",
     "admin" : "${USER}"
   }
 }
