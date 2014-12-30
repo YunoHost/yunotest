@@ -1,0 +1,9 @@
+{
+  "id" : "freshrss",
+  "git" : "https://github.com/plopoyop/freshrss_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/freshrss",
+    "admin" : "${USER}"
+  }
+}

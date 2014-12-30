@@ -1,0 +1,8 @@
+{
+  "id" : "linuxdash",
+  "git" : "https://github.com/opi/linuxdash_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/linuxdash"
+  }
+}

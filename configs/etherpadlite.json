@@ -1,0 +1,9 @@
+{
+  "id" : "etherpadlite",
+  "git" : "https://github.com/abeudin/etherpadlite_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/pad",
+    "public_site" : "Yes"
+  }
+}

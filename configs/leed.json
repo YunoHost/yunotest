@@ -1,0 +1,13 @@
+{
+  "id" : "leed",
+  "git" : "https://github.com/maniackcrudelis/leed_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/leed",
+    "admin" : "${USER}",
+    "password" : "${RANDOM_PASSWORD}",
+    "language" : "fr",
+    "market" : "Yes",
+    "is_public" : "Yes"
+  }
+}

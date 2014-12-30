@@ -1,0 +1,8 @@
+{
+  "id" : "phpsysinfo",
+  "git" : "https://github.com/lunarok/phpsysinfo_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/phpsysinfo"
+  }
+}

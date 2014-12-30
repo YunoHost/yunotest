@@ -1,0 +1,8 @@
+{
+  "id" : "radicale",
+  "git" : "https://github.com/abeudin/radicale_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/sync"
+  }
+}

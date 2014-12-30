@@ -1,0 +1,10 @@
+{
+  "id" : "ghostblog",
+  "git" : "https://github.com/julienmalik/ghost_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/blog",
+    "admin" : "${USER}",
+    "password" : "${RANDOM_PASSWORD}"
+  }
+}

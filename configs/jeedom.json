@@ -1,0 +1,9 @@
+{
+  "id" : "jeedom",
+  "git" : "https://github.com/lunarok/jeedom_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/jeedom",
+    "user" : "${USER}"
+  }
+}

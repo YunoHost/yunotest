@@ -1,0 +1,8 @@
+{
+  "id" : "couchpotato",
+  "git" : "https://github.com/Chao-Man/couchpotato_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/couchpotato"
+  }
+}

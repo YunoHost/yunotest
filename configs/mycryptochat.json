@@ -1,0 +1,9 @@
+{
+  "id" : "mycryptochat",
+  "git" : "https://github.com/mrtino/mycryptochat_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/mycryptochat",
+    "is_public" : "Yes"
+  }
+}

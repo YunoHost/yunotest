@@ -1,0 +1,10 @@
+{
+  "id" : "piwigo",
+  "git" : "https://github.com/monsieur-a/piwigo_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/phpsysinfo",
+    "admin" : "${USER}",
+    "public_site" : "Yes"
+  }
+}

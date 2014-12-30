@@ -1,0 +1,9 @@
+{
+  "id" : "htmltool",
+  "git" : "https://github.com/IsserTerrus/htmltools_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/htmltools",
+    "is_public" : "Yes"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id" : "mediawiki",
+  "git" : "https://github.com/mikangali-labs/mediawiki_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/wiki",
+    "wikiname" : "YunoTest Wiki",
+    "language" : "en",
+    "is_public" : "Yes"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "id" : "filebin",
+  "git" : "https://github.com/IsserTerrus/filebin_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/filebin",
+    "is_public" : "Yes"
+  }
+}

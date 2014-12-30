@@ -1,0 +1,10 @@
+{
+  "id" : "htpc",
+  "git" : "https://github.com/lunarok/htpc_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/htpc",
+    "ip" : "127.0.0.1",
+    "port" : "8085"
+  }
+}

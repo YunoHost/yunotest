@@ -1,0 +1,9 @@
+{
+  "id" : "ampache",
+  "git" : "https://github.com/abeudin/ampache_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/ampache",
+    "admin" : "${USER}"
+  }
+}

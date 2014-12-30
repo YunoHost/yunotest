@@ -1,0 +1,9 @@
+{
+  "id" : "kanboard",
+  "git" : "https://github.com/mbugeia/kanboard_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/kanboard",
+    "admin" : "${USER}"
+  }
+}

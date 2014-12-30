@@ -1,0 +1,10 @@
+{
+  "id" : "glpi",
+  "git" : "https://github.com/abeudin/glpi_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/glpi",
+    "admin" : "${USER}"
+    "language" : "fr_FR"
+  }
+}

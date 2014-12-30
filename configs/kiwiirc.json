@@ -1,0 +1,9 @@
+{
+  "id" : "kiwiirc",
+  "git" : "https://github.com/julienmalik/kiwiirc_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/irc",
+    "public_site" : "Yes"
+  }
+}

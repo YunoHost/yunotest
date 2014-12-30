@@ -1,0 +1,9 @@
+{
+  "id" : "jenkins",
+  "git" : "https://github.com/julienmalik/jenkins_ynh",
+  "install" : {
+    "domain" : "${MAIN_DOMAIN}",
+    "path" : "/jenkins",
+    "is_public" : "Yes"
+  }
+}
