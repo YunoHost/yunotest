@@ -3,5 +3,6 @@
   "git" : "https://github.com/abeudin/z-push_ynh",
   "install" : {
     "domain" : "${MAIN_DOMAIN}"
-  }
+  },
+  "screenshot" : "no"
 }
