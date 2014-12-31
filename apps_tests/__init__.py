@@ -118,22 +118,27 @@ def _make_AppTest(config):
         context.server.get_remote_file("/tmp/%s.installed_files.txt" % config["id"], self.get_attachments_dir())
         assert exitstatus == 0, "install exited with non-zero code"
 
-        with open( os.path.join(os.path.dirname(__file__), "screenshot.js.tpl") ) as tplf:
-          tpl = str(tplf.read())
-          script = tpl \
-            .replace("YNH_PORTAL_URL", "https://%s/yunohost/sso" % (context.server.domain)) \
-            .replace("YNH_USER", context.server.user) \
-            .replace("YNH_PASSWORD", context.server.user_password) \
-            .replace("YNH_APP_URL", "https://%s%s" % (context.server.domain, config["install"]["path"])) \
-            .replace("YNH_SCREENSHOT_DIR", self.get_attachments_dir()) \
-            .replace("YNH_SCREENSHOT_FILENAME", "%s.png" % (config["id"]) )
-        script_location = "%s/%s.js" % (self.get_tmp_dir(), config["id"])
-        with open( script_location , "w" ) as scriptf:
-          scriptf.write(script)
-        (output, exitstatus) = pexpect.run("casperjs --ignore-ssl-errors=true %s" % (script_location), withexitstatus=True, timeout= 60)
-        print output
-        assert exitstatus == 0, "test_screenshot exited with non-zero code"
+        screenshot = True
+        if "screenshot" in config and config["screenshot"] == "no":
+          screenshot = False
         
+        if screenshot:
+          with open( os.path.join(os.path.dirname(__file__), "screenshot.js.tpl") ) as tplf:
+            tpl = str(tplf.read())
+            script = tpl \
+              .replace("YNH_PORTAL_URL", "https://%s/yunohost/sso" % (context.server.domain)) \
+              .replace("YNH_USER", context.server.user) \
+              .replace("YNH_PASSWORD", context.server.user_password) \
+              .replace("YNH_APP_URL", "https://%s%s" % (context.server.domain, config["install"]["path"])) \
+              .replace("YNH_SCREENSHOT_DIR", self.get_attachments_dir()) \
+              .replace("YNH_SCREENSHOT_FILENAME", "%s.png" % (config["id"]) )
+          script_location = "%s/%s.js" % (self.get_tmp_dir(), config["id"])
+          with open( script_location , "w" ) as scriptf:
+            scriptf.write(script)
+          (output, exitstatus) = pexpect.run("casperjs --ignore-ssl-errors=true %s" % (script_location), withexitstatus=True, timeout= 60)
+          print output
+          assert exitstatus == 0, "test_screenshot exited with non-zero code"
+          
       def test_remove(self):
         global context
         (command_output, exitstatus) = context.server.remove_app(config)
