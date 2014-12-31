@@ -14,12 +14,11 @@
       "type" : "string",
       "format" : "uri"
     },
-    "developer" : {
+    "maintainer" : {
       "type" : "object",
       "properties" : {
         "name" :  { "type" : "string" },
-        "email" : { "$ref" : "#/definitions/email" },
-        "url" :   { "$ref" : "#/definitions/uri" }
+        "email" : { "$ref" : "#/definitions/email" }
       },
       "required" : ["name", "email"],
       "additionalProperties": false
@@ -29,8 +28,8 @@
       "properties" : {
         "en" : { "type" : "string" }
       },
-      "additionalProperties": { "type": "string" },
-      "required" : ["en"]
+      "required" : ["en"],
+      "additionalProperties": { "type": "string" }
     },
     "multi_instance" : { "$ref" : "#/definitions/boolean_string" },
     "arguments" : {
@@ -41,6 +40,7 @@
           "items": { "$ref" : "#/definitions/install_item" }
         }
       },
+      "required" : ["install"],
       "additionalProperties": false
     },
     "install_item" : {
@@ -55,15 +55,16 @@
         "pattern" :  { "type" : "string" },
         "optional" : { "$ref" : "#/definitions/boolean_string" }
       },
-      "required" : ["name", "ask"]
+      "required" : ["name", "ask"],
+      "additionalProperties": false
     },
     "install_item_ask" : {
       "type" : "object",
       "properties" : {
         "en" : { "type" : "string" }
       },
-      "additionalProperties": { "type": "string" },
-      "required" : ["en"]
+      "required" : ["en"],
+      "additionalProperties": { "type": "string" }
     },
     "install_item_type" : {
       "type" : "string",
@@ -79,7 +80,8 @@
     "name" :           { "type" : "string" },
     "id" :             { "type" : "string" },
     "description" :    { "$ref" : "#/definitions/description" },
-    "developer" :      { "$ref" : "#/definitions/developer" },
+    "url" :            { "$ref" : "#/definitions/uri" },
+    "maintainer" :     { "$ref" : "#/definitions/maintainer" },
     "multi_instance" : { "$ref" : "#/definitions/multi_instance" },
     "arguments" :      { "$ref" : "#/definitions/arguments" }
   },
