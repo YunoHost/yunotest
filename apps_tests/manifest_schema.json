@@ -90,7 +90,7 @@
     "name",
     "id",
     "description",
-    "developer",
+    "maintainer",
     "multi_instance",
     "arguments"
   ]
