@@ -1,10 +1,6 @@
 var casper = require('casper').create();
 
-casper.start('YNH_PORTAL_URL', function() {
-  this.fill('form[name="input"]', 
-    { user : "YNH_USER", password : "YNH_PASSWORD" },
-    true);
-});
+casper.setHttpAuth("YNH_USER", "YNH_PASSWORD");
 
 casper.thenOpen('YNH_APP_URL', function() {
     this.echo(this.getTitle());
