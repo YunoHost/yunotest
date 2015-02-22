@@ -33,8 +33,14 @@ class DigitalOceanServer:
 
   def deploy(self):
     print('Starting to deploy DigitalOcean server %s' % (self.domain))
+
     command = "python %s/deploy.py --domain %s --password %s" \
        % (self.doyunohost_path, self.domain, self.admin_password)
+
+    branch = os.getenv('BRANCH')
+    if branch == 'testing' or branch == 'unstable':
+      command = command + ' --branch %s' % branch
+
     self.run_local_cmd(command)
     print('Successfully deployed DigitalOcean server %s' % (self.domain))
 
