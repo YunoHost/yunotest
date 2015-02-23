@@ -38,9 +38,10 @@ class PackageContext:
     try:
       self.server.deploy()
       self.server.setup()
-    except:
+    except e:
       self.teardown_server()
- 
+      raise e
+
   def teardown_server(self):
     self.server.remove()
 

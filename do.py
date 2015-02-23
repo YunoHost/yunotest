@@ -41,7 +41,10 @@ class DigitalOceanServer:
     if branch == 'testing' or branch == 'unstable':
       command = command + ' --branch %s' % branch
 
-    self.run_local_cmd(command)
+    exit_code = self.run_local_cmd(command)
+    if not exit_code:
+      raise RuntimeError('Empty exit code from DO server deployment')
+
     print('Successfully deployed DigitalOcean server %s' % (self.domain))
 
   def remove(self):
