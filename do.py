@@ -66,6 +66,9 @@ class DigitalOceanServer:
       if line.endswith('\n'):
         line = line[:-1]
       print line
+
+    # Check if process returned, and set exit code
+    process.poll()
     exit_code = process.returncode
     print('< exit code : %s' % (exit_code))
     
