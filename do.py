@@ -120,8 +120,8 @@ class DigitalOceanServer:
     print('IP retrieved : %s' % self.ip)
 
   def init_admin_account(self):
-    # init account creation
-    self.run_remote_cmd("su - admin")
+    # init account creation (this will create /home/admin which we need later)
+    self.run_remote_cmd("su - admin -c 'echo Logged successfully to $USER account'")
     
     # copy ssh keys
     self.run_remote_cmd("cp -r /root/.ssh /home/admin")
