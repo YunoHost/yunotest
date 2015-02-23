@@ -42,7 +42,7 @@ class DigitalOceanServer:
       command = command + ' --branch %s' % branch
 
     exit_code = self.run_local_cmd(command)
-    if not exit_code:
+    if exit_code is None:
       raise RuntimeError('Empty exit code from DO server deployment')
 
     print('Successfully deployed DigitalOcean server %s' % (self.domain))
